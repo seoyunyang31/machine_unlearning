@@ -1,9 +1,6 @@
 # Data files
 data/
 
-# PyTorch model files
-*.pth
-
 # Project context file
 PROJECT_CONTEXT.md
 
@@ -22,6 +19,4 @@ venv/
 
 # Other
 .DS_Store
-
-# Unlearning indices
-unlearning_indices/
+artifacts/
