@@ -55,6 +55,14 @@ If you prefer not to use the VS Code Dev Containers feature directly, you can bu
     ```
     You will be in the `/app` directory and can run the project scripts from there.
 
+### Verify the Environment
+
+Once the container is running, open a new terminal in VS Code (`Terminal > New Terminal`). To ensure all libraries are installed correctly and the environment is ready, run the simple verification script:
+
+```bash
+`python3 src/test_environment.py`
+```
+
 ## Project Structure
 
 *   `src/`: Contains all Python source code for data processing, model implementation, and training.
@@ -63,6 +71,17 @@ If you prefer not to use the VS Code Dev Containers feature directly, you can bu
 *   `Dockerfile`: Defines the Docker image for the development environment.
 *   `docker-compose.yml`: Defines the Docker services and their configuration.
 *   `requirements.txt`: Lists the Python dependencies for the project.
+
+*   `artifacts/`: Stores all generated files (processed datasets, model weights, unlearning indices). Ignored by git.
+*   `data/`: Contains the raw KuaiRec dataset. Ignored by git.
+*   `src/`: Contains all Python source code, organized into packages:
+    *   `data/`: Scripts for data processing and generation (``prepare_dataset.py``, ``generate_unlearning_indices.py``).
+    *   `models/`: The PyTorch `NCF` model definition.
+    *   `training/`: Scripts for training and evaluation (``train_baseline.py``).
+    *   `utils/`: Common utility functions (e.g., ``metrics.py``).
+    *   ``test_environment.py``: A simple script to verify the container setup.
+*   `.devcontainer/`: Configuration for the VS Code development container.
+*   `Dockerfile`, ``docker-compose.yml``, ``requirements.txt``: Define the container environment.
 
 ## Running the code
 Once the setup is complete, you can execute the scripts within the container. For example, to run the training script:
