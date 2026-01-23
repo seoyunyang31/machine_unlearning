@@ -7,3 +7,4 @@ services:
       - "8888:8888"
     volumes:
       - .:/app
+    mem_limit: 4g

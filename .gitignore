@@ -1,22 +1,27 @@
-# Data files
-data/
-
-# Project context file
-PROJECT_CONTEXT.md
-
-# Python
+# Byte-compiled / optimized / C extensions
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.Python
+
+# Local virtual environments
 env/
 venv/
+.venv
 
-# IDE
+# IDE and OS files
 .idea/
 .vscode/
-
-# Other
 .DS_Store
-artifacts/
+
+# Generated data, artifacts, and models
+/data/
+/artifacts/
+/models/
+
+# Log and model files by pattern as a safeguard
+*.log
+*.pth
+
+# Project context file
+PROJECT_CONTEXT.md

@@ -2,3 +2,5 @@ pandas
 numpy
 torch
 huggingface_hub
+PyYAML
+tqdm
