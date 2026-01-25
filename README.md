@@ -1,6 +1,11 @@
-# Machine Unlearning Project
+# Machine Unlearning with NCF
 
-This project explores machine unlearning techniques with a recommendation system baseline using the NeuMF model on the KuaiRec dataset.
+This project explores machine unlearning techniques with a recommendation system baseline using the Neutral Collaborative Filtering (NCF) model on the KuaiRec dataset.
+
+The trained weight of an example NCF model can be found at [huggingface.co/seoyuny/social_media_ncf](https://huggingface.co/seoyuny/social_media_ncf).
+The KuaiRec dataset can be found at [kuairec.com](https://kuairec.com/).
+
+# Getting Started
 
 ## Prerequisites
 
@@ -12,80 +17,80 @@ Before you begin, ensure you have the following installed:
 
 ## Setup
 
-This project is configured to run inside a Docker container using VS Code's Dev Containers feature. This provides a consistent and reproducible development environment for all team members.
+This project is configured to run inside a Docker container using VS Code's Dev Containers feature. This provides a consistent and reproducible development environment.
 
-### Quick Start with VS Code
+1.  **Clone the repository.**
+2.  **Open the cloned folder in VS Code.**
+3.  **Reopen in Container:** Click the notification in the bottom-right corner to reopen the project in the dev container. This will build the environment and install all dependencies.
 
-1.  **Clone the repository:**
-    ```bash
-    git clone <repository-url>
-    cd <repository-name>
-    ```
+For manual setup instructions, see the "Manual Setup" section below.
 
-2.  **Open in VS Code:**
-    Open the cloned repository folder in Visual Studio Code.
+## End-to-End Workflow
 
-3.  **Reopen in Container:**
-    You will see a notification in the bottom-right corner asking if you want to "Reopen in Container". Click it.
+Follow these steps to replicate the baseline model training.
 
-    This will:
-    *   Build the Docker image using the `Dockerfile`.
-    *   Run the container using the `docker-compose.yml` configuration.
-    *   Mount your local project directory into the `/app` directory in the container.
-    *   Automatically install the required Python extensions (`ms-python.python`) inside the container as specified in `devcontainer.json`.
-    *   Run `pip install -r requirements.txt` after the container is created to install all necessary Python packages.
+### 1. Data Setup
 
-You are now ready to work inside the development container. All commands, scripts, and applications will run within this isolated environment.
+1.  Download the **KuaiRec 2.0** dataset. You will need the `big_matrix.csv` file.
+2.  Create a directory named `data` in the root of this project.
+3.  Place the `big_matrix.csv` file inside a nested directory structure: `/app/data/KuaiRec 2.0/data/big_matrix.csv`.
 
-### Manual Setup (Alternative)
+The `/data/` directory is ignored by Git, so your dataset will not be committed.
 
-If you prefer not to use the VS Code Dev Containers feature directly, you can build and run the container manually.
+### 2. Prepare Datasets
 
-1.  **Build and Run the Container:**
-    From the root of the project directory, run:
-    ```bash
-    docker-compose up -d --build
-    ```
-    This will build the image and start the `app` service in the background.
-
-2.  **Access the Container:**
-    You can open a shell inside the running container:
-    ```bash
-    docker exec -it machine_unlearning bash
-    ```
-    You will be in the `/app` directory and can run the project scripts from there.
-
-### Verify the Environment
-
-Once the container is running, open a new terminal in VS Code (`Terminal > New Terminal`). To ensure all libraries are installed correctly and the environment is ready, run the simple verification script:
+Run the data preparation script. This script processes the raw `big_matrix.csv` into training and test sets (`.pt` files) that are saved in the `/artifacts` directory.
 
 ```bash
-`python3 src/test_environment.py`
+python src/data/prepare_dataset.py
 ```
+
+### 3. Train the Baseline Model
+
+Run the baseline training script. This will train the NCF model using the processed datasets.
+
+```bash
+python src/training/train_baseline.py
+```
+
+### 4. Check the Outputs
+
+*   The best performing model will be saved to `models/ncf_best.pth`.
+*   Detailed training progress is logged to `training.log`.
 
 ## Project Structure
 
-*   `src/`: Contains all Python source code for data processing, model implementation, and training.
-*   `data/`: Intended for datasets. This directory is in `.gitignore` and should not be committed.
-*   `.devcontainer/`: Contains the configuration for the VS Code development container.
-*   `Dockerfile`: Defines the Docker image for the development environment.
-*   `docker-compose.yml`: Defines the Docker services and their configuration.
-*   `requirements.txt`: Lists the Python dependencies for the project.
-
-*   `artifacts/`: Stores all generated files (processed datasets, model weights, unlearning indices). Ignored by git.
-*   `data/`: Contains the raw KuaiRec dataset. Ignored by git.
-*   `src/`: Contains all Python source code, organized into packages:
-    *   `data/`: Scripts for data processing and generation (``prepare_dataset.py``, ``generate_unlearning_indices.py``).
-    *   `models/`: The PyTorch `NCF` model definition.
-    *   `training/`: Scripts for training and evaluation (``train_baseline.py``).
-    *   `utils/`: Common utility functions (e.g., ``metrics.py``).
-    *   ``test_environment.py``: A simple script to verify the container setup.
 *   `.devcontainer/`: Configuration for the VS Code development container.
-*   `Dockerfile`, ``docker-compose.yml``, ``requirements.txt``: Define the container environment.
+*   `artifacts/`: Stores all generated files (processed datasets, etc.). This is ignored by Git.
+*   `data/`: Stores the raw KuaiRec dataset. This is ignored by Git.
+*   `models/`: Stores trained model weights (`.pth` files). This is ignored by Git.
+*   `src/`: Contains all Python source code:
+    *   `data/`: Scripts for data processing and preparation.
+    *   `models/`: The PyTorch `NCF` model definition.
+    *   `training/`: Scripts for model training. Includes the main `train_baseline.py` and a `train_template.py` for experiments.
+    *   `utils/`: Common utility functions, such as evaluation metrics.
+    *   `test_environment.py`: A simple script to verify the container setup.
+*   `Dockerfile`, `docker-compose.yml`, `requirements.txt`: Files that define the Docker container environment.
+*   `training.log`: Log file for the baseline training script. Ignored by Git.
 
-## Running the code
-Once the setup is complete, you can execute the scripts within the container. For example, to run the training script:
-```bash
-python3 src/train_baseline.py --data_path data/"KuaiRec 2.0"/data/big_matrix.csv
-```
+## Manual Setup (Alternative)
+
+If you prefer not to use the VS Code Dev Containers feature, you can build and run the container manually.
+
+1.  **Build and Run the Container:**
+    ```bash
+    docker-compose up -d --build
+    ```
+2.  **Access the Container:**
+    ```bash
+    docker exec -it machine_unlearning bash
+    ```
+3.  **Verify the Environment:**
+    To ensure all libraries are installed correctly, run the verification script:
+    ```bash
+    python3 src/test_environment.py
+    ```
+
+## Further Reading
+Once the setup is complete, see the README files in `src/data/README.md` and `src/training/README.md` for more detailed information about the data preparation and training scripts.
 
