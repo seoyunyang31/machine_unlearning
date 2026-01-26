@@ -1,34 +1,12 @@
 # Data Processing and Preparation
 
-This directory contains the scripts responsible for processing the raw KuaiRec dataset. There are two primary, separate workflows.
+This directory contains the scripts responsible for processing the raw KuaiRec dataset and preparing it for model training.
 
-## Workflows
-
-### 1. Baseline Model Training
-
-This is the standard workflow for training the initial "teacher" model.
-
-1.  **Run `prepare_dataset.py`:** This script processes `big_matrix.csv` to create the main training and test sets (`train_dataset.pt` and `test_full.pt`). This is a required first step before running `train_baseline.py`.
-    ```bash
-    python src/data/prepare_dataset.py
-    ```
-
-### 2. Unlearning Scenario Preparation
-
-This workflow is only required when conducting unlearning experiments.
-
-1.  **Run `generate_unlearning_indices.py`:** This script also processes `big_matrix.csv` to identify different subsets of data to be "forgotten" and "retained," saving them as separate `.csv` and `.npy` files. These artifacts are used by specialized unlearning scripts.
-    ```bash
-    python src/data/generate_unlearning_indices.py
-    ```
-
----
-
-## Script Details
+## Scripts
 
 ### `prepare_dataset.py`
 
-This is the primary script for creating the datasets for baseline training.
+This is the primary script for creating the training and evaluation datasets. It should be run before any model training.
 
 -   **Input:** The raw `big_matrix.csv` from the KuaiRec dataset.
 -   **Process:**
@@ -43,6 +21,10 @@ This is the primary script for creating the datasets for baseline training.
     -   `test_full.pt`: A tensor containing the single "left-out" positive interaction for each user, to be used for evaluation.
     -   `user_map.json` & `video_map.json`: Dictionaries mapping original user/video IDs to their new integer indices.
 
+```bash
+python src/data/prepare_dataset.py
+```
+
 ### `generate_unlearning_indices.py`
 
 This script generates the data files required for machine unlearning scenarios. It identifies target users/items and splits the raw dataset into `forget` and `retain` files.
@@ -51,6 +33,10 @@ This script generates the data files required for machine unlearning scenarios. 
     -   `..._forget.csv` / `..._retain.csv` files for different unlearning scenarios.
     -   `..._forget_idx.npy` files containing the row indices for each forget set.
 
+```bash
+python src/data/generate_unlearning_indices.py
+```
+
 ### `dataset.py`
 
-This module defines the `NCFDataset` class. It is **used by the `train_baseline.py` script**, not by the data preparation scripts. It is not a script and should not be run directly. Its primary role is to enable efficient, on-the-fly negative sampling during the training loop.
+This module defines the `NCFDataset` class. It is **used by the `train_baseline.py` script**, not by the data preparation scripts. Its primary role is to enable efficient, on-the-fly negative sampling during the training loop.
