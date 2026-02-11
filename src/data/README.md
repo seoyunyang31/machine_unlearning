@@ -39,4 +39,4 @@ python src/data/generate_unlearning_indices.py
 
 ### `dataset.py`
 
-This module defines the `NCFDataset` class. It is **used by the `train_baseline.py` script**, not by the data preparation scripts. Its primary role is to enable efficient, on-the-fly negative sampling during the training loop.
+This module defines the `NCFDataset` class. It is **used by the `train_baseline.py` script**, not by the data preparation scripts. Its primary role is to enable efficient, on-the-fly negative sampling during the training loop
